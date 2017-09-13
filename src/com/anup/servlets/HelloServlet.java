@@ -57,7 +57,7 @@ public class HelloServlet extends GenericServlet {
 			request.setAttribute("url", "http://www.testjstl.com");		
 			*/
 			
-			String sql = "SELECT hostname, components_version FROM testdb.serverlist where environment='stage' and components_version like '%astra%'";
+			String sql = "SELECT hostname, components_version FROM testdb.serverlist where environment='qa' and components_version like '%astra%'";
 			
 			   PreparedStatement pstm = conn.prepareStatement(sql);
 			      ResultSet rs = pstm.executeQuery();
@@ -70,8 +70,6 @@ public class HelloServlet extends GenericServlet {
 			      }
 			      
 			      //out.print("String is:" + componentsVersionStr.toString());			      
-			      
-			      
 			      String[] users = componentsVersionStr.toString().split(" ");
 			      List<String> componentVersionList = new LinkedList<String>();
 			      List<String> components = new LinkedList<String>();
