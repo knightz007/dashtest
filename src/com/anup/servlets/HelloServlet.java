@@ -77,9 +77,17 @@ public class HelloServlet extends GenericServlet {
 			      String[] comp;
 			      for (int i = 0; i < users.length; i++)
 			      {
-			    	 componentVersionList.add(users[i].toString());
-			    	 comp = users[i].toString().split(":");
-			    	 components.add(comp[0].toString());		    	 
+			    	 if(users[i].toString().toLowerCase().contains("astra"))
+			    	 {
+			    	 componentVersionList.add(users[i].toString());			    	 
+			    	 
+			    	 comp = users[i].toString().split(":");	
+			    	 if(comp[0].toString().toLowerCase() == "astra")
+			    	 {
+					 components.add(comp[0].toString());	
+			    	 }
+					
+			    	 }
 			      }
 			      
 			      out.println("Number of non unique components:" + components.size());
