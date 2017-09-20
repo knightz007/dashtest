@@ -32,6 +32,8 @@ public class CheckComponent {
 		 pstm = conn.prepareStatement(compSql);
 		 rs_comp = pstm.executeQuery();
 		 
+		 //pstm.close();
+		 
 		 String serverlist_sql = "";
 		 
 		 List<String> env_list = new ArrayList<String>();
@@ -51,10 +53,14 @@ public class CheckComponent {
 		 List<String> components =  new LinkedList<String>();
 		 Set<String> uniqueComponents = null;
 		 Set<String> uniqueComponentVersion  = null;
+		 String updateSQL = "";
+		 String componentlistUpdateSQL = "";
 		 		 
 	     for(int i=0; i<env_list.size();i++)
 	     {	    	 
 	    	System.out.println("Environment:" + env_list.get(i).toString());
+	    	//int uniqueCount = 0;
+	    	int envOutOfSync = 0;
 	    	 for (int j=0; j< comp_list.size();j++)
 	    	 {	    
 	    		 System.out.println("Component:" + comp_list.get(j).toString());
@@ -70,7 +76,6 @@ public class CheckComponent {
 			    	  users = rs_serverlist.getString("components_version").toString().split(" ");
 			    	  //System.out.println("Users length:" + users.length);
 				      
-
 				      String[] comp;
 				      for (int k = 0; k < users.length; k++)
 				      {
@@ -93,7 +98,7 @@ public class CheckComponent {
 					    	 uniqueComponents = new HashSet<String>(components);	
 					    	 uniqueComponentVersion = new HashSet<String>(componentVersionList);
 						      
-				    	 }				    	 
+				    	 }			    	 
 				    	 
 				    	 
 				      }
@@ -104,17 +109,57 @@ public class CheckComponent {
 
 			    	 System.out.println("Number of unique component versions:" + uniqueComponentVersion.size());	
 				     System.out.println("Number of unique components:" + uniqueComponents.size());  
+				     
+				     if ( uniqueComponentVersion.size() != uniqueComponents.size())
+				     {	
+				    	 envOutOfSync = envOutOfSync + 1;
+				    	 componentlistUpdateSQL = "UPDATE testdb.componentlist SET " + env_list.get(i).toString() + "ComponentsInSync='No' WHERE component='" 
+				    		+ comp_list.get(j).toString() + "'";
+				    	 //updateSQL = "UPDATE testdb.environmentlist SET IsEnvInSync='No' WHERE environment='" + env_list.get(i).toString() + "'"; 
+
+						//System.out.println(env_list.get(i).toString() + " env NOT in sync. Table will be updated!!");				    	 
+				     }
+				     else
+				     {
+				    	 componentlistUpdateSQL = "UPDATE testdb.componentlist SET " + env_list.get(i).toString() + "ComponentsInSync='Yes' WHERE component='" 
+				    		+ comp_list.get(j).toString() + "'";
+				    	 //updateSQL = "UPDATE testdb.environmentlist SET IsEnvInSync='Yes' WHERE environment='" + env_list.get(i).toString() + "'";
+				    	// System.out.println(env_list.get(i).toString() + " env in sync. Table will be updated!!");
+				     }
+				     
+							     
 				     componentVersionList.clear();
 			    	 components.clear();
 			    	  uniqueComponents.clear();
 			    	  uniqueComponentVersion.clear();
+			    	  
+			    	  pstm = conn.prepareStatement(componentlistUpdateSQL);
+					  pstm.executeUpdate();
+					  pstm.close();
+			    	  
 	    		 
 	    	 }
 	    	 
-	    	 
+	    	 //Update the environmentlist table
+		     if ( envOutOfSync != 0)
+		     {
+		    	 updateSQL = "UPDATE testdb.environmentlist SET IsEnvInSync='No' WHERE environment='" + env_list.get(i).toString() + "'"; 
+				 System.out.println(env_list.get(i).toString() + " env NOT in sync. Table will be updated!!");				    	 
+		     }
+		     else
+		     {
+		    	 updateSQL = "UPDATE testdb.environmentlist SET IsEnvInSync='Yes' WHERE environment='" + env_list.get(i).toString() + "'";
+		    	 System.out.println(env_list.get(i).toString() + " env in sync. Table will be updated!!");
+		     }
+		     
+		     pstm = conn.prepareStatement(updateSQL);
+			 pstm.executeUpdate();
+			 pstm.close();
 	    	 
 		  
 	     }
+	     
+	     
 	     
 	  /*   System.out.println("Number of non unique components:" + components.size());
 	     
