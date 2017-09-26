@@ -15,6 +15,7 @@ public class queryDB {
 	
 	 private static List<ServerInfo> serverList = null;
 	 private static List<ReleaseArtifactInfo> releaseArtifactList = null;
+	 private static List<ComponentInfo> componentInfoList = null;
 	
 	public static String findServer(Connection conn, String hostName) throws SQLException {
 		 
@@ -222,6 +223,9 @@ public class queryDB {
 	    	  rartifactInfo.setQAVersion(rs.getString("qa_env_version"));
 	    	  rartifactInfo.setStageVersion(rs.getString("stage_env_version"));
 	    	  rartifactInfo.setProdVersion(rs.getString("prod_env_version"));
+	    	  rartifactInfo.setprodComponentInSync(rs.getString("ProdComponentsInSync"));
+	    	  rartifactInfo.setqaComponentInSync(rs.getString("QaComponentsInSync"));
+	    	  rartifactInfo.setstageComponentInSync(rs.getString("stageComponentsInSync"));
 	    	  releaseArtifactList.add(rartifactInfo);
 	      }
 	      
@@ -233,7 +237,35 @@ public class queryDB {
 	    return releaseArtifactList;
 	  }
 	
-	
+	public static List<ComponentInfo> getComponentSyncInfo() throws SQLException {
+		 
+		 Connection conn;
+			try {
+			conn = DbConnector.getConnection();
+					
+	      String sql = "select component, ProdComponentsInSync, QaComponentsInSync,stageComponentsInSync from testdb.componentlist";            
+	 
+	      PreparedStatement pstm = conn.prepareStatement(sql);
+	      ResultSet rs = pstm.executeQuery();
+	      	      
+	      componentInfoList = new LinkedList<ComponentInfo>();
+	      
+	      while(rs.next()) {
+	    	  ComponentInfo componenttInfo = new ComponentInfo();
+	    	  componenttInfo.setComponent(rs.getString("component"));
+	    	  componenttInfo.setprodComponentInSync(rs.getString("ProdComponentsInSync"));
+	    	  componenttInfo.setqaComponentInSync(rs.getString("QaComponentsInSync"));
+	    	  componenttInfo.setstageComponentInSync(rs.getString("stageComponentsInSync"));
+	    	  componentInfoList.add(componenttInfo);
+	      }
+	      
+	  
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    return componentInfoList;
+	  }
 
 
 }

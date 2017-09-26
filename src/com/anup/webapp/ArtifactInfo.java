@@ -3,7 +3,8 @@ package com.anup.webapp;
 public class ArtifactInfo {
 	
     public ArtifactInfo(String environment, String app, String component, String current_artifactVersion, 
-    		 String release, String certified_artifactVersion)
+    		 String release, String certified_artifactVersion, String qaComponentInSync, String stageComponentInSync, String perfComponentInSync,
+    		   String prodComponentInSync)
     {    	
         this.environment = environment;
         this.app = app;
@@ -11,6 +12,11 @@ public class ArtifactInfo {
         this.current_artifactVersion = current_artifactVersion;
         this.release = release; 
         this.certified_artifactVersion = certified_artifactVersion;
+        this.qaComponentInSync = qaComponentInSync;
+       this.stageComponentInSync = stageComponentInSync;
+       this.perfComponentInSync = perfComponentInSync;
+       this.prodComponentInSync = prodComponentInSync;	 
+        
     }
     
     private String environment;
@@ -19,6 +25,10 @@ public class ArtifactInfo {
     private String current_artifactVersion;
     private String release;	
 	private String certified_artifactVersion;
+    private String qaComponentInSync;
+    private String stageComponentInSync;
+    private String perfComponentInSync;
+    private String prodComponentInSync;
 	
 	public ArtifactInfo() {
 	}
@@ -60,6 +70,30 @@ public class ArtifactInfo {
 	}
 	public void setCertifiedArtifactVersion(String certified_artifactVersion) {
 		this.certified_artifactVersion = certified_artifactVersion;
+	}
+	public String getqaComponentInSync() {
+		return qaComponentInSync;
+	}
+	public void setqaComponentInSync(String qaComponentInSync) {
+		this.qaComponentInSync = qaComponentInSync;
+	}
+	public String getstageComponentInSync() {
+		return stageComponentInSync;
+	}
+	public void setstageComponentInSync(String stageComponentInSync) {
+		this.stageComponentInSync = stageComponentInSync;
+	}
+	public String getperfComponentInSync() {
+		return perfComponentInSync;
+	}
+	public void setperfComponentInSync(String perfComponentInSync) {
+		this.perfComponentInSync = perfComponentInSync;
+	}
+	public String getprodComponentInSync() {
+		return prodComponentInSync;
+	}
+	public void setprodComponentInSync(String prodComponentInSync) {
+		this.prodComponentInSync = prodComponentInSync;
 	}
 
 

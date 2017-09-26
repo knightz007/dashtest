@@ -23,6 +23,7 @@ public class CheckComponent {
 		ResultSet rs_comp = null;
 		ResultSet rs_serverlist = null;
 		
+		String currentRelease = "7.11";
 		String envSql = "SELECT environment FROM testdb.environmentlist";
 		String compSql = "SELECT component FROM testdb.componentlist";
 		
@@ -55,6 +56,7 @@ public class CheckComponent {
 		 Set<String> uniqueComponentVersion  = null;
 		 String updateSQL = "";
 		 String componentlistUpdateSQL = "";
+		 String releaseArtifactUpdateSQL = "";
 		 		 
 	     for(int i=0; i<env_list.size();i++)
 	     {	    	 
@@ -115,16 +117,19 @@ public class CheckComponent {
 				    	 envOutOfSync = envOutOfSync + 1;
 				    	 componentlistUpdateSQL = "UPDATE testdb.componentlist SET " + env_list.get(i).toString() + "ComponentsInSync='No' WHERE component='" 
 				    		+ comp_list.get(j).toString() + "'";
-				    	 //updateSQL = "UPDATE testdb.environmentlist SET IsEnvInSync='No' WHERE environment='" + env_list.get(i).toString() + "'"; 
-
-						//System.out.println(env_list.get(i).toString() + " env NOT in sync. Table will be updated!!");				    	 
+				    	 
+				    	 releaseArtifactUpdateSQL = "UPDATE testdb.releaseartifactinfo SET " + env_list.get(i).toString() + "ComponentsInSync ='No'"
+				    	 		+ " WHERE component='" + comp_list.get(j).toString() + "' and release_number='" +  currentRelease + "'";
+		    	 
 				     }
 				     else
 				     {
 				    	 componentlistUpdateSQL = "UPDATE testdb.componentlist SET " + env_list.get(i).toString() + "ComponentsInSync='Yes' WHERE component='" 
 				    		+ comp_list.get(j).toString() + "'";
-				    	 //updateSQL = "UPDATE testdb.environmentlist SET IsEnvInSync='Yes' WHERE environment='" + env_list.get(i).toString() + "'";
-				    	// System.out.println(env_list.get(i).toString() + " env in sync. Table will be updated!!");
+				    	 
+				    	 releaseArtifactUpdateSQL = "UPDATE testdb.releaseartifactinfo SET " + env_list.get(i).toString() + "ComponentsInSync ='Yes'"
+					    	 		+ " WHERE component='" + comp_list.get(j).toString() + "' and release_number='" +  currentRelease + "'";
+			    	
 				     }
 				     
 							     
@@ -135,6 +140,10 @@ public class CheckComponent {
 			    	  
 			    	  pstm = conn.prepareStatement(componentlistUpdateSQL);
 					  pstm.executeUpdate();
+					  
+			    	  pstm = conn.prepareStatement(releaseArtifactUpdateSQL);
+					  pstm.executeUpdate();
+					  pstm.close();
 					  pstm.close();
 			    	  
 	    		 

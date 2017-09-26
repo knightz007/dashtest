@@ -14,6 +14,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebServlet;
 
 import com.anup.dbutils.DbConnector;
+import com.anup.webapp.ComponentInfo;
 import com.anup.webapp.ReleaseArtifactInfo;
 import com.anup.webapp.ServerInfo;
 import com.anup.webapp.queryDB;
@@ -53,7 +54,12 @@ public class ArtifactVersion extends GenericServlet {
 						
 			}
 			
-			request.setAttribute("releaseartifactList", releaseartifactList);			
+			//request.setAttribute("releaseartifactList", releaseartifactList);		
+
+			//Check if component is in sync
+			List<ComponentInfo> componentInfoList = queryDB.getComponentSyncInfo();
+			request.setAttribute("componentInfoList", componentInfoList);		
+			
 			RequestDispatcher dispatcher = request.getServletContext().getRequestDispatcher("/ReleaseArtifactView.jsp");
 		    dispatcher.forward(request, response);	    
 			
