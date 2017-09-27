@@ -69,10 +69,19 @@ td.highlight {
 		  
 	    	  
 	    	  "createdRow": function( row, data, dataIndex ) {
-	              if ( data[4] != "711_124" ) {        
+	              if ( data[7] == "No" ) {        
 	          		//$(row).addClass('red');
 	            	  $('td', row).eq(4).addClass('highlight');
-	        }
+	        		}
+	              if ( data[8] == "No" ) {        
+		          		//$(row).addClass('red');
+		            	  $('td', row).eq(5).addClass('highlight');
+		        		}
+	              if ( data[9] == "No" ) {        
+		          		//$(row).addClass('red');
+		            	  $('td', row).eq(6).addClass('highlight');
+		        		}
+	              
 	      }
 	 
 		
@@ -137,14 +146,21 @@ td.highlight {
 </head>
 <body>
 
-<form id="artifactForm" action="ReleaseArtifactView.jsp"  method="post">
+<form id="artifactForm" action="ArtifactVersion"  method="post">
 <div>
  <h2>Release Artifacts dash</h2>
 <select id="msds-select" name="test">
-	<option value="7.11">7.11</option>
+	<!-- <option value="7.11">7.11</option>
 	<option value="7.12">7.12</option>
 	<option>7.13</option>
-	<option>7.14</option>
+	<option>7.14</option> -->
+	
+ <c:forEach var="releaseList" items="${releaseList}">
+
+                <option>${releaseList.getReleaseNumber()}</option>
+
+            </c:forEach>
+
 </select>
 
 <input type="hidden" name="selectedValue" id="hiddenRelease" value=""/>
@@ -164,7 +180,9 @@ td.highlight {
                <th><u>QA Artifact Version</u></th> 
                <th><u>Stage Artifact Version</u></th> 
                <th><u>Prod Artifact Version</u></th>   
-          
+          		<th></th>
+          		<th></th>
+          		<th></th>
            </tr>
        </thead>
        <tbody> 
@@ -184,6 +202,9 @@ td.highlight {
 	                    <td style="cursor:pointer" class="txt"><%=r.getQAversion()%></td>  
 	                    <td style="cursor:pointer" class="txt"><%=r.getStageversion()%></td>  
 	                    <td style="cursor:pointer" class="txt"><%=r.getProdversion()%></td> 
+	                    <td><%=r.getqaComponentInSync()%></td>
+	                    <td><%=r.getstageComponentInSync()%></td>
+	                    <td><%=r.getprodComponentInSync()%></td>
                     </tr>                	
        		<% } %>
    		</tbody>
@@ -197,6 +218,9 @@ window.onload = function(){
 	    	document.getElementById("msds-select").value = value;
 	    	} 
    		  var table= $('#releaseArtifacts').DataTable();
+   		  //hide column 7,8,9
+   		  table.columns( [ 7, 8, 9 ] ).visible( false, false );
+   		  
 	      var hv = jQuery("#msds-select option:selected").text();
 	      //Show all columns only for current release
 	      if (hv !=  "7.11")

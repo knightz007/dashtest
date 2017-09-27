@@ -16,6 +16,7 @@ public class queryDB {
 	 private static List<ServerInfo> serverList = null;
 	 private static List<ReleaseArtifactInfo> releaseArtifactList = null;
 	 private static List<ComponentInfo> componentInfoList = null;
+	 private static List<releaseInfo> releaseInfoList = null;
 	
 	public static String findServer(Connection conn, String hostName) throws SQLException {
 		 
@@ -265,6 +266,34 @@ public class queryDB {
 			e.printStackTrace();
 		}
 	    return componentInfoList;
+	  }
+	
+	public static List<releaseInfo> getReleaseInfo() throws SQLException {
+		 
+		 Connection conn;
+			try {
+			conn = DbConnector.getConnection();
+					
+	      String sql = "select release_number, IsCurrentRelease from testdb.releaselist";            
+	 
+	      PreparedStatement pstm = conn.prepareStatement(sql);
+	      ResultSet rs = pstm.executeQuery();
+	      	      
+	      releaseInfoList = new LinkedList<releaseInfo>();
+	      
+	      while(rs.next()) {
+	    	  releaseInfo releaseInfo = new releaseInfo();
+	    	  releaseInfo.setReleaseNumber(rs.getString("release_number"));
+	    	  releaseInfo.setIsCurrentRelease(rs.getString("IsCurrentRelease"));	    	  
+	    	  releaseInfoList.add(releaseInfo);
+	      }
+	      
+	  
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    return releaseInfoList;
 	  }
 
 

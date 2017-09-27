@@ -18,6 +18,7 @@ import com.anup.webapp.ComponentInfo;
 import com.anup.webapp.ReleaseArtifactInfo;
 import com.anup.webapp.ServerInfo;
 import com.anup.webapp.queryDB;
+import com.anup.webapp.releaseInfo;
 
 /**
  * Servlet implementation class ArtifactVersion
@@ -58,7 +59,11 @@ public class ArtifactVersion extends GenericServlet {
 
 			//Check if component is in sync
 			List<ComponentInfo> componentInfoList = queryDB.getComponentSyncInfo();
-			request.setAttribute("componentInfoList", componentInfoList);		
+			request.setAttribute("componentInfoList", componentInfoList);
+			
+			List<releaseInfo> releaseInfoList = queryDB.getReleaseInfo();
+
+		    request.setAttribute("releaseList", releaseInfoList);
 			
 			RequestDispatcher dispatcher = request.getServletContext().getRequestDispatcher("/ReleaseArtifactView.jsp");
 		    dispatcher.forward(request, response);	    
