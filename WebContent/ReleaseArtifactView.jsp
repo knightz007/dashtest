@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-<%@ page import="com.anup.webapp.ReleaseArtifactInfo,com.anup.webapp.queryDB"%>
+<%@ page import="com.anup.webapp.ReleaseArtifactInfo,com.anup.webapp.releaseInfo,com.anup.webapp.queryDB"%>
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
@@ -145,7 +145,7 @@ td.highlight {
  </script>
 </head>
 <body>
-
+<%String currentRelease = (String)request.getAttribute("currentRelease"); %>
 <form id="artifactForm" action="ArtifactVersion"  method="post">
 <div>
  <h2>Release Artifacts dash</h2>
@@ -155,12 +155,17 @@ td.highlight {
 	<option>7.13</option>
 	<option>7.14</option> -->
 	
- <c:forEach var="releaseList" items="${releaseList}">
+            
 
-                <option>${releaseList.getReleaseNumber()}</option>
+ <% for (releaseInfo r: queryDB.getReleaseInfo()){
+ String selected = "";
+        if (r.getIsCurrentRelease().equals("Yes")) {
+           selected = "selected"; } %> 
+           
+	<%-- <option value="<%=r.getReleaseNumber()%>"><%=r.getReleaseNumber()%></option> --%>
+ <option value="<%=r.getReleaseNumber()%>" <%=selected%>><%=r.getReleaseNumber()%></option>
 
-            </c:forEach>
-
+<% } %>
 </select>
 
 <input type="hidden" name="selectedValue" id="hiddenRelease" value=""/>
@@ -191,7 +196,8 @@ td.highlight {
 				String releaseSelect = request.getParameter("test"); 
         		if (releaseSelect == "" || releaseSelect == null)
         		{
-        			releaseSelect="7.11";
+        			releaseSelect=currentRelease;
+        			//System.out.println(currentRelease);
         		}
               for (ReleaseArtifactInfo r: queryDB.getArtifactInfoList(releaseSelect)){ %>              
                     <tr>
@@ -223,8 +229,8 @@ window.onload = function(){
    		  
 	      var hv = jQuery("#msds-select option:selected").text();
 	      //Show all columns only for current release
-	      if (hv !=  "7.11")
-	    	  {
+	      if (hv !=  ${currentRelease})
+	    	  {	    	  	
 	      		table.columns( [ 3, 4, 5, 6 ] ).visible( false, false );  
 	    	  } 
 	} 

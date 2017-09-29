@@ -62,7 +62,15 @@ public class ArtifactVersion extends GenericServlet {
 			request.setAttribute("componentInfoList", componentInfoList);
 			
 			List<releaseInfo> releaseInfoList = queryDB.getReleaseInfo();
-
+			String currentRelease = "";
+			for (releaseInfo rinfo : releaseInfoList) {
+				if (rinfo.getIsCurrentRelease().equals("Yes"))
+				{
+					currentRelease = rinfo.getReleaseNumber().toString();
+				}
+			}
+			
+			request.setAttribute("currentRelease", currentRelease);
 		    request.setAttribute("releaseList", releaseInfoList);
 			
 			RequestDispatcher dispatcher = request.getServletContext().getRequestDispatcher("/ReleaseArtifactView.jsp");
