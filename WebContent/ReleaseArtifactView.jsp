@@ -50,48 +50,30 @@ td.highlight {
 	 var table= $('#releaseArtifacts').DataTable({
 		 	
 		 "columnDefs": [
-	    	    {
-	    	      //"data": null,
-	    	      //"defaultContent": "<button class=iframe>Details</button>",
-	    	      //targets": -1,
-	    	      
-	    	      className: "iframe cursor:pointer", "targets": [ 4, 5, 6 ],
-	    		 	"createdCell": function (td, cellData, rowData, row, col) {	    		 		
-	    		        if ( rowData[2] != rowData[4] ) {
-	    		    		 //$('td', row).eq(4).addClass('highlight');
-	    		        }
-	    		        // $('td', row).eq(5).addClass('highlight');	    		       
-	    		  	}
+	    	    {  
+	    	      className: "iframe cursor:pointer", "targets": [ 4, 5, 6 ]
 	    	    }
 	    	   
-	    	  ],
-	    	  
-		  
-	    	  
+	    	  ],  		  
+
+	    	  // Check if components for release is in sync
 	    	  "createdRow": function( row, data, dataIndex ) {
 	              if ( data[7] == "No" ) {        
-	          		//$(row).addClass('red');
-	            	  $('td', row).eq(4).addClass('highlight');
+	   	           	  $('td', row).eq(4).addClass('highlight');
 	        		}
 	              if ( data[8] == "No" ) {        
-		          		//$(row).addClass('red');
 		            	  $('td', row).eq(5).addClass('highlight');
 		        		}
 	              if ( data[9] == "No" ) {        
-		          		//$(row).addClass('red');
 		            	  $('td', row).eq(6).addClass('highlight');
-		        		}
-	              
-	      }
-	 
-		
-
-	      
+		        		}	              
+	      }	      
 	    });
 	    
+	 	// Display server listing page based on environment clicked in table header column
 	    $('#releaseArtifacts tbody').on('click', '.iframe', function(){
 	    	var data = table.row( $(this).closest('tr') ).data();
-	    	//alert( data[0] +"'s salary is: "+ data[ 2 ] );
+
 	    	var idx = table.column( this ).index( 'visible' );
 	    	var env="";
 	    	if (idx == 4)
@@ -106,14 +88,12 @@ td.highlight {
 	    	{ 
 	    		env = "prod";
 	    	}
-	    	
-	    	//table.column( this ).index( 'visible' ).addClass('red');
-	    			
-	    	//alert(env);
+
 	    	$(".iframe").colorbox({ iframe:true, innerWidth:"80%", innerHeight:"80%", href:"http://localhost:8080/ServletTest/ServerInfoList?env="+env+"&component="+data[1]});
 
 	    	});
 	    
+	 	// Display server listing based on version column selected - get results according to component and environment
 	    $('#releaseArtifacts thead').on('click', '.iframe', function(){
 	    	var idx = table.column( this ).index( 'visible' );
 	    	var env="";
@@ -129,8 +109,7 @@ td.highlight {
 	    	{ 
 	    		env = "prod";
 	    	}
-	    	
-	    	//alert(env);
+
 	    	$(".iframe").colorbox({ iframe:true, innerWidth:"80%", innerHeight:"80%", href:"http://localhost:8080/ServletTest/ServerInfoList?env="+env+"&component="});
 	    	
 	    });
@@ -158,36 +137,6 @@ td.highlight {
 <div>
  <h2>Release Artifacts dash</h2>
 <select id="msds-select" name="test" onchange="Submit(this.value);">
-	<!-- <option value="7.11">7.11</option>
-	<option value="7.12">7.12</option>
-	<option>7.13</option>
-	<option>7.14</option> -->
-	
- <%-- <% 
-
-if ( ! "POST".equalsIgnoreCase(request.getMethod()) &&
-    ! (request.getRequestURI() != null && request.getRequestURI().toString().equalsIgnoreCase("http://localhost:8080/ServletTest/ArtifactVersion")))
-   		{
-		 out.println("Its postback");
-		 for (releaseInfo r: queryDB.getReleaseInfo()){
-			 String selected = "";
-			   if (r.getIsCurrentRelease().equals("Yes")) {
-			           selected = "selected"; } %> 
-			           
-			<option value="<%=r.getReleaseNumber()%>" <%=selected%>><%=r.getReleaseNumber()%></option>
-
-			<% }	 
-		  
-		} 
-else
-{
-	for (releaseInfo r: queryDB.getReleaseInfo()){ %>
-		<option value="<%=r.getReleaseNumber()%>"><%=r.getReleaseNumber()%></option>
-	<% }
-}
-		
-		%>   --%>         
-
 <% for (releaseInfo r: queryDB.getReleaseInfo()){
  String selected = "";
         if (r.getIsCurrentRelease().equals("Yes")) {
@@ -226,8 +175,7 @@ else
 				String releaseSelect = request.getParameter("test"); 
         		if (releaseSelect == "" || releaseSelect == null)
         		{
-        			releaseSelect=currentRelease;
-        			//System.out.println(currentRelease);
+        			releaseSelect=currentRelease;        	
         		}
               for (ReleaseArtifactInfo r: queryDB.getArtifactInfoList(releaseSelect)){ %>              
                     <tr>
@@ -258,7 +206,7 @@ window.onload = function(){
    		  table.columns( [ 7, 8, 9 ] ).visible( false, false );
    		  
 	      var hv = jQuery("#msds-select option:selected").text();
-	      //alert(hv);
+
 	      //Show all columns only for current release
 	      if (hv !=  ${currentRelease})
 	    	  {	    	  	
