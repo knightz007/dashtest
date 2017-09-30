@@ -202,7 +202,7 @@ public class queryDB {
 					+ "FROM releaseartifactinfo C RIGHT JOIN currentartifactinfo S " 
 			        + "ON C.release_component= S.current_component where currentrelease_number=" + release; */
 		
-	      String sql = "Select * from releaseartifactinfo where release_number=" + release;	             
+	      String sql = "Select * from testdb.releaseartifactinfo where release_number=" + release;	             
 	 
 	      PreparedStatement pstm = conn.prepareStatement(sql);
 	      ResultSet rs = pstm.executeQuery();

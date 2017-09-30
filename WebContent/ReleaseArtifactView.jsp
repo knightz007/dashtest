@@ -142,35 +142,65 @@ td.highlight {
 	      });        
 	      
 	} ); 
+ 
+ 
+ function Submit(value)
+ {    
+     document.getElementById("hiddenRelease").value = value;
+     document.getElementById("artifactForm").submit();
+ }
+
  </script>
 </head>
 <body>
 <%String currentRelease = (String)request.getAttribute("currentRelease"); %>
-<form id="artifactForm" action="ArtifactVersion"  method="post">
+<form id="artifactForm" action="ArtifactVersion"  method="POST">
 <div>
  <h2>Release Artifacts dash</h2>
-<select id="msds-select" name="test">
+<select id="msds-select" name="test" onchange="Submit(this.value);">
 	<!-- <option value="7.11">7.11</option>
 	<option value="7.12">7.12</option>
 	<option>7.13</option>
 	<option>7.14</option> -->
 	
-            
+ <%-- <% 
 
- <% for (releaseInfo r: queryDB.getReleaseInfo()){
+if ( ! "POST".equalsIgnoreCase(request.getMethod()) &&
+    ! (request.getRequestURI() != null && request.getRequestURI().toString().equalsIgnoreCase("http://localhost:8080/ServletTest/ArtifactVersion")))
+   		{
+		 out.println("Its postback");
+		 for (releaseInfo r: queryDB.getReleaseInfo()){
+			 String selected = "";
+			   if (r.getIsCurrentRelease().equals("Yes")) {
+			           selected = "selected"; } %> 
+			           
+			<option value="<%=r.getReleaseNumber()%>" <%=selected%>><%=r.getReleaseNumber()%></option>
+
+			<% }	 
+		  
+		} 
+else
+{
+	for (releaseInfo r: queryDB.getReleaseInfo()){ %>
+		<option value="<%=r.getReleaseNumber()%>"><%=r.getReleaseNumber()%></option>
+	<% }
+}
+		
+		%>   --%>         
+
+<% for (releaseInfo r: queryDB.getReleaseInfo()){
  String selected = "";
         if (r.getIsCurrentRelease().equals("Yes")) {
            selected = "selected"; } %> 
            
-	<%-- <option value="<%=r.getReleaseNumber()%>"><%=r.getReleaseNumber()%></option> --%>
- <option value="<%=r.getReleaseNumber()%>" <%=selected%>><%=r.getReleaseNumber()%></option>
+	 <option value="<%=r.getReleaseNumber()%>" <%=selected%>><%=r.getReleaseNumber()%></option>
 
-<% } %>
+<% } %> 
 </select>
 
 <input type="hidden" name="selectedValue" id="hiddenRelease" value=""/>
 <input type="hidden" name="param" />  
-<input type="submit" value="Load Release Artifacts">
+<!-- <input type="submit" value="Load Release Artifacts"> -->
 </div>
 
 <p></p>
@@ -228,6 +258,7 @@ window.onload = function(){
    		  table.columns( [ 7, 8, 9 ] ).visible( false, false );
    		  
 	      var hv = jQuery("#msds-select option:selected").text();
+	      //alert(hv);
 	      //Show all columns only for current release
 	      if (hv !=  ${currentRelease})
 	    	  {	    	  	
