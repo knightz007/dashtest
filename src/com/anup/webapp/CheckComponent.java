@@ -23,7 +23,7 @@ public class CheckComponent {
 		ResultSet rs_comp = null;
 		ResultSet rs_serverlist = null;
 		
-		String currentRelease = "7.11";
+		String currentRelease = "7.13";
 		String envSql = "SELECT environment FROM testdb.environmentlist";
 		String compSql = "SELECT component FROM testdb.componentlist";
 		
@@ -49,9 +49,10 @@ public class CheckComponent {
 			 comp_list.add(rs_comp.getString("component"));
 		 }
 		 
-		 String[] users;
+		 String[] components_version_array;
 		 List<String> componentVersionList = new LinkedList<String>();;
 		 List<String> components =  new LinkedList<String>();
+		 //List<String> version =  new LinkedList<String>();
 		 Set<String> uniqueComponents = null;
 		 Set<String> uniqueComponentVersion  = null;
 		 String updateSQL = "";
@@ -75,42 +76,71 @@ public class CheckComponent {
 	    		 //System.out.println("Servers:Versions");
 			      while(rs_serverlist.next()) {
 			    	  //System.out.println(rs_serverlist.getString("hostname") + " : " + rs_serverlist.getString("components_version"));  		    	  
-			    	  users = rs_serverlist.getString("components_version").toString().split(" ");
-			    	  //System.out.println("Users length:" + users.length);
+			    	  components_version_array = rs_serverlist.getString("components_version").toString().split(" ");
+			    	  //System.out.println("Users length:" + components_version_array.length);
 				      
 				      String[] comp;
-				      for (int k = 0; k < users.length; k++)
+				    
+				      for (int k = 0; k < components_version_array.length; k++)
 				      {
 				    	  //System.out.println("comp name:" + comp_list.get(j).toString());
-				    	 if(users[k].toString().toLowerCase().contains(comp_list.get(j).toString()))
+				    	 if(components_version_array[k].toString().toLowerCase().contains(comp_list.get(j).toString()))
 				    	 {
 				    		 //System.out.println("Match");
-					    	 componentVersionList.add(users[k].toString());			    	 
+					    	 componentVersionList.add(components_version_array[k].toString());			    	 
 					    	 
-					    	 comp = users[k].toString().split(":");	
+					    	 comp = components_version_array[k].toString().split(":");	
 					    	 //System.out.println("component from split:" + comp[0].toString().toLowerCase());
 					    	 //System.out.println("component from list:" + comp_list.get(j).toString());
 					    	 //System.out.println("Number of non unique components:" + components.size());
 					    	 if(comp[0].toString().toLowerCase().equals(comp_list.get(j).toString().toLowerCase()))
 					    	 {
 					    		 //System.out.println("Component Added:" + comp[0].toString());
-					    		 components.add(comp[0].toString());						        
+					    		 components.add(comp[0].toString());
+					    		 //version.add(comp[1].toString());
 					   	      	 					      
 					    	 }	
 					    	 uniqueComponents = new HashSet<String>(components);	
 					    	 uniqueComponentVersion = new HashSet<String>(componentVersionList);
 						      
 				    	 }			    	 
+				        
 				    	 
-				    	 
-				      }
+				      }   
+
 				     
 				      //uniqueComponentVersion.clear();
 			      }
 			         //uniqueComponents.clear();
-
-			    	 System.out.println("Number of unique component versions:" + uniqueComponentVersion.size());	
-				     System.out.println("Number of unique components:" + uniqueComponents.size());  
+			       
+			    	 System.out.println("Number of unique component versions:" + uniqueComponentVersion.size());
+			    	 System.out.println("Number of unique components:" + uniqueComponents.size());
+			    	 //System.out.println("Component version:" + uniqueComponentVersion.);
+			    	 
+		         	Object[] componentVersion =  uniqueComponentVersion.toArray();
+		         	String version="";
+			    	 for (int c = 0; c < 1; c++){
+			    		 System.out.println("Component version name:" + componentVersion[c].toString());
+			    		 version = componentVersion[c].toString().split(":")[1];
+			    		 releaseArtifactUpdateSQL = "UPDATE testdb.releaseartifactinfo SET " + env_list.get(i).toString() + 
+			    				 "_env_version ='" + version.toString() + "'" 
+					    	 		+ " WHERE component='" + comp_list.get(j).toString() + "' and release_number='" +  currentRelease + "'";
+			    		 
+			    		 componentlistUpdateSQL = "UPDATE testdb.componentlist SET component_" + env_list.get(i).toString() + "_version='" +  
+			    				 version.toString() + "' WHERE component='" + comp_list.get(j).toString() + "'";
+			    		 
+			    	 }
+			    	 
+			    	 
+			    	  pstm = conn.prepareStatement(componentlistUpdateSQL);
+					  pstm.executeUpdate();
+					  
+			    	  pstm = conn.prepareStatement(releaseArtifactUpdateSQL);
+					  pstm.executeUpdate();
+					  pstm.close();
+					 
+				       
+				 
 				     
 				     if ( uniqueComponentVersion.size() != uniqueComponents.size())
 				     {	
@@ -144,8 +174,7 @@ public class CheckComponent {
 			    	  pstm = conn.prepareStatement(releaseArtifactUpdateSQL);
 					  pstm.executeUpdate();
 					  pstm.close();
-					  pstm.close();
-			    	  
+			
 	    		 
 	    	 }
 	    	 

@@ -49,10 +49,7 @@ public class ArtifactVersion extends GenericServlet {
 			List<ReleaseArtifactInfo> releaseartifactList = queryDB.getReleaseArtifactInfoList();
 			
 			for (ReleaseArtifactInfo artifact : releaseartifactList) {
-				out.println(artifact.getRelease() + "::" + artifact.getComponent() + "::" + artifact.getCertifiedArtifactVersion());
-				
-				
-						
+				out.println(artifact.getRelease() + "::" + artifact.getComponent() + "::" + artifact.getCertifiedArtifactVersion());						
 			}
 			
 			//request.setAttribute("releaseartifactList", releaseartifactList);		
@@ -71,7 +68,7 @@ public class ArtifactVersion extends GenericServlet {
 			}
 			
 			request.setAttribute("currentRelease", currentRelease);
-		    request.setAttribute("releaseList", releaseInfoList);
+		    //request.setAttribute("releaseList", releaseInfoList);
 			
 			RequestDispatcher dispatcher = request.getServletContext().getRequestDispatcher("/ReleaseArtifactView.jsp");
 		    dispatcher.forward(request, response);	    
@@ -80,9 +77,7 @@ public class ArtifactVersion extends GenericServlet {
 		}  catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-
-		
+		}	
 		
 	}
 
